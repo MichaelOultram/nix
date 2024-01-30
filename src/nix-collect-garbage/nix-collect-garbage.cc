@@ -43,11 +43,19 @@ void removeOldGenerations(std::string dir)
             }
             if (link.find("link") != std::string::npos) {
                 printInfo("removing old generations of profile %s", path);
-                if (deleteOlderThan != "") {
+                if (deleteOlderThan == "") {
+                    deleteOldGenerations(path, dryRun);
+                } else if (deleteOlderThan[deleteOlderThan.size() - 1] == 'd') {
                     auto t = parseOlderThanTimeSpec(deleteOlderThan);
                     deleteGenerationsOlderThan(path, t, dryRun);
+                } else if (deleteOlderThan[0] == '+') {
+                    auto str_max = deleteOlderThan.substr(1);
+                    auto max = string2Int<GenerationNumber>(str_max);
+                    if (!max)
+                        throw Error("invalid number of generations to keep '%1%'", deleteOlderThan);
+                    deleteGenerationsGreaterThan(path, *max, dryRun);
                 } else
-                    deleteOldGenerations(path, dryRun);
+                    throw UsageError("invalid period '%1%', expected something like '14d' or '+5'", deleteOlderThan);
             }
         } else if (type == DT_DIR) {
             removeOldGenerations(path);
