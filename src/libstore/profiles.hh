@@ -99,7 +99,7 @@ class LocalFSStore;
 Path createGeneration(LocalFSStore & store, Path profile, StorePath outPath);
 
 /**
- * Unconditionally delete a generation
+ * Unconditionally delete a generation. Prevents deleting current generation.
  *
  * @param profile A profile specified by its name and location combined into a path.
  *
@@ -108,9 +108,6 @@ Path createGeneration(LocalFSStore & store, Path profile, StorePath outPath);
  *
  * @param dryRun Log what would be deleted instead of actually doing
  * so.
- *
- * Because there is no check of whether the generation to delete is
- * active, this is somewhat unsafe.
  *
  * @todo Should we expose this at all?
  */
